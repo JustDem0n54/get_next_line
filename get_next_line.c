@@ -5,68 +5,75 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nrontard <nrontard@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/21 14:05:50 by nrontard          #+#    #+#             */
-/*   Updated: 2024/11/22 16:53:43 by nrontard         ###   ########.fr       */
+/*   Created: 2024/11/25 12:24:09 by nrontard          #+#    #+#             */
+/*   Updated: 2024/11/26 16:56:41 by nrontard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-#include <stdio.h>
-
-
-
-char	*str_start(char *str)
+char *create_storage(char *str)
 {
-	int i;
-	int j;
-	char *buff;
+	size_t	i;
+	size_t	j;
+	char	*storage;
 	
 	i = 0;
-	buff = malloc(ft_strlen(str) * sizeof(char));
-	while (str[i] != '\n')
+	while (str[i] != '\n' && str[i])
 		i++;
-	j = 0;
+	if (str[i + 1] == '\0')
+	{
+		free (str);
+		return (NULL);
+	}
+	storage = malloc(sizeof(char) * (ft_strlen(str) - i + 1));
+	if (storage == NULL)
+		return (NULL);
 	i++;
-	while(str[i])
-		buff[j++] = str[i++];
-	while(j < i)
-		buff[j++] = '\0';
-	return(buff);
+	j = 0;
+	while (str[i])
+		storage[j++] = str[i++];
+	storage[j] = '\0';
+	free (str);
+	return(storage);
 }
 
 char	*read_check(char *str, int fd)
 {
 	int size_rd;
 	char *buff;
+	char *temp;
 
-	buff = malloc(sizeof(char) * BUFFER + 1);
+	buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buff == NULL)
 		return (NULL);
 	size_rd = 1;
 	while (ft_strchr(str, '\n') == 0 && size_rd != 0)
 	{
-		size_rd = read(fd, buff, BUFFER);
+		size_rd = read(fd, buff, BUFFER_SIZE);
+		if (size_rd == -1)
+		{
+			free(buff);
+			return (NULL);
+		}
+		temp = str;
 		buff[size_rd] = '\0';
 		str = ft_strjoin(str, buff);
+		free (temp);
 	}
 	free(buff);
 	return (str);
 }
 
-char *get_next_line(int fd)
+char *ft_strcpy(char *str)
 {
-	static char *str;
+	size_t i;
 	char *buff;
-	int i;
-	
+
 	i = 0;
-	if (str != NULL)
-		str = str_start(str);
-	else
-		str = ft_calloc(BUFFER, sizeof(char));
-	str = read_check(str, fd);
 	buff = malloc(ft_strlen(str) + 1 * sizeof(char));
+	if (buff == NULL)
+		return (NULL);
 	while (str[i] != '\n' && str[i])
 	{
 		buff[i] = str[i];
@@ -81,20 +88,37 @@ char *get_next_line(int fd)
 	return (buff);
 }
 
-// int main() {
-//     int fd = open("example.txt", O_RDONLY);  // Ouvre le fichier en mode lecture seule
-//     int i = 5;
-	
-//     if (fd == -1) {
-//         perror("Erreur à l'ouverture du fichier");
-//         return 1;
-//     }
-// 	while (i > 0)
-// 	{
-// 		printf("%s", get_next_line(fd));
-// 		i--; // Affiche les données lues
-// 	}
-//     close(fd);  // Ferme le fichier
-//     return 0;
-// }
+char *get_next_line(int fd)
+{
+	char *str;
+	static char *storage;
 
+	if (BUFFER_SIZE <= 0 || fd < 0 || read (fd, 0, 0) <  0)
+		return (NULL);
+	storage = read_check(storage, fd);
+	if (!storage)
+		return (NULL);
+	str = ft_strcpy(storage);
+	storage = create_storage(storage);
+	return (str);
+}
+
+int main() {
+    int fd = open("example.txt", O_RDONLY);
+    int i = 3;
+	char *GNL;
+	
+    if (fd == -1) {
+        perror("Erreur à l'ouverture du fichier");
+        return 1;
+    }
+	while (i > 0)
+	{
+		GNL = get_next_line(fd);
+		printf("%s", GNL);
+		free (GNL);
+		i--;
+	}
+    close(fd);
+    return 0;
+}

@@ -6,7 +6,7 @@
 /*   By: nrontard <nrontard@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 16:24:08 by nrontard          #+#    #+#             */
-/*   Updated: 2024/11/22 16:24:35 by nrontard         ###   ########.fr       */
+/*   Updated: 2024/11/26 16:57:03 by nrontard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,13 @@ void	*ft_calloc(size_t count, size_t size)
 	return (str);
 }
 
-int	ft_strchr(const char *str, int c)
+int	ft_strchr(char *str, int c)
 {
 	int	i;
 
 	i = 0;
+	if (str == NULL)
+		return (0);
 	while (str[i] != '\0' && str[i] != (char)c)
 		i++;
 	if (str[i] == (char)c)
@@ -52,32 +54,41 @@ int	ft_strchr(const char *str, int c)
 	return (0);
 }
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(char *s)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while (s[i])
+	if (s == NULL)
+		return (0);
+	while (s[i] && s[i] != '\n')
 		i++;
 	return (i);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *storage, char *buff)
 {
 	char	*str;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	str = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	size_t	i;
+	size_t	j;
+	
+	if (!storage)
+	{
+		storage = (char *)malloc(1 * sizeof(char));
+		storage[0] = '\0';
+	}
+	if (!storage || !buff)
+		return (NULL);
+	str = (char *)malloc(sizeof(char) * (ft_strlen(storage) + BUFFER_SIZE + 1));
 	if (str == NULL)
 		return (NULL);
-	while (s1[i])
-		str[j++] = s1[i++];
-	i = 0;
-	while (s2[i])
-		str[j++] = s2[i++];
-	str[j] = '\0';
+	i = -1;
+	j = 0;
+	if (storage)
+		while (storage[++i] != '\0')
+			str[i] = storage[i];
+	while (buff[j] != '\0')
+		str[i++] = buff[j++];
+	str[ft_strlen(storage) + BUFFER_SIZE] = '\0';
 	return (str);
 }
