@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nrontard <nrontard@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 12:24:09 by nrontard          #+#    #+#             */
-/*   Updated: 2024/11/27 16:15:18 by nrontard         ###   ########.fr       */
+/*   Updated: 2024/11/27 16:08:53 by nrontard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*create_storage(char *str)
 {
@@ -100,18 +100,18 @@ char	*ft_strcpy(char *str)
 char	*get_next_line(int fd)
 {
 	char		*str;
-	static char	*storage = NULL;
+	static char	*storage[1024];
 	char		buff[BUFFER_SIZE + 1];
 
 	if (BUFFER_SIZE == 0)
 		return (NULL);
-	storage = read_check(storage, fd, buff);
-	if (!storage)
+	storage[fd] = read_check(storage[fd], fd, buff);
+	if (!storage[fd])
 		return (NULL);
-	str = ft_strcpy(storage);
+	str = ft_strcpy(storage[fd]);
 	if (str == NULL)
 		return (NULL);
-	storage = create_storage(storage);
+	storage[fd] = create_storage(storage[fd]);
 	return (str);
 }
 

@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nrontard <nrontard@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 14:36:14 by nrontard          #+#    #+#             */
-/*   Updated: 2024/11/27 16:14:02 by nrontard         ###   ########.fr       */
+/*   Updated: 2024/11/27 16:13:54 by nrontard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include <stdio.h>
 # include <unistd.h>
@@ -31,5 +31,7 @@ size_t	ft_strlen(char *s);
 char	*ft_strjoin(char *storage, char *buff, int size);
 char	*read_check(char *str, int fd, char *buff);
 char	*get_next_line(int fd);
+char	*create_storage(char *str);
+char	*ft_strcpy(char *str);
 
 #endif
